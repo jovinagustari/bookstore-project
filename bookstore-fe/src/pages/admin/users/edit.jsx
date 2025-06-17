@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { showCategory, updateCategory } from "../../../_services/categories";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function OrderEdit() {
+export default function UserEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
 

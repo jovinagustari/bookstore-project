@@ -1,6 +1,36 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { register } from "../../_services/auth";
 
 export default function Register() {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await register(formData);
+      localStorage.setItem("token", res.token); // atau sesuaikan dengan respons API kamu
+      navigate("/"); // redirect setelah sukses
+    } catch (err) {
+      setError("Registrasi gagal. Cek kembali data yang diisi.");
+      console.log("Registrasi gagal:", err.response?.data || err.message);
+      
+    }
+  };
+
   return (
     <>
       <section className="bg-gray-50 dark:bg-gray-900">
@@ -10,7 +40,8 @@ export default function Register() {
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                 Create an account
               </h1>
-              <form className="space-y-4 md:space-y-6" action="#">
+              {error && <p className="text-red-500 mb-2">{error}</p>}
+              <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6" action="#">
                 <div>
                   <label
                     htmlFor="email"
@@ -22,6 +53,8 @@ export default function Register() {
                     type="email"
                     name="email"
                     id="email"
+                    value={formData.email}
+                    onChange={handleChange}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="name@company.com"
                     required=""
@@ -38,6 +71,8 @@ export default function Register() {
                     type="text"
                     name="name"
                     id="name"
+                    value={formData.name}
+                    onChange={handleChange}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="name@company.com"
                     required=""
@@ -55,6 +90,8 @@ export default function Register() {
                     name="password"
                     id="password"
                     placeholder="••••••••"
+                    value={formData.password}
+                    onChange={handleChange}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     required=""
                   />

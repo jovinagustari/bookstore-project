@@ -79,7 +79,7 @@ class AuthController extends Controller
     }
 
     public function logout() {
-        // try 
+        // try
         try {
             // 1. Invalidate token
             JWTAuth::invalidate(JWTAuth::getToken());
@@ -91,7 +91,7 @@ class AuthController extends Controller
             ], 200); // OK
 
         // catch
-        } catch (JWTException $e) { 
+        } catch (JWTException $e) {
             // 1. Cek isFailed
             return response()->json([
                 'success' => false,

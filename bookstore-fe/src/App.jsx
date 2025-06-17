@@ -12,6 +12,13 @@ import AdminCategories from "./pages/admin/categories"
 import CategoryCreate from "./pages/admin/categories/create"
 import BookEdit from "./pages/admin/books/edit"
 import ShowBook from "./pages/public/books/show"
+import AdminOrders from "./pages/admin/orders"
+import OrderCreate from "./pages/admin/orders/create"
+import CategoryEdit from "./pages/admin/categories/edit"
+import UserCreate from "./pages/admin/users/create"
+import AdminUsers from "./pages/admin/users"
+import UserEdit from "./pages/admin/users/edit"
+import OrderEdit from "./pages/admin/orders/edit"
 
 function App() {
   return (
@@ -45,6 +52,17 @@ function App() {
             <Route path="categories">
               <Route index element={<AdminCategories />} />
               <Route path="create" element={<CategoryCreate />} />
+              <Route path="edit/:id" element={<CategoryEdit />} />
+            </Route>
+            <Route path="orders">
+              <Route index element={<AdminOrders />} />
+              <Route path="create" element={<OrderCreate />} />
+              <Route path="edit/:id" element={<OrderEdit />} />
+            </Route>
+            <Route path="users">
+              <Route index element={<AdminUsers />} />
+              <Route path="create" element={<UserCreate />} />
+              <Route path="edit/:id" element={<UserEdit />} />
             </Route>
           </Route>
 

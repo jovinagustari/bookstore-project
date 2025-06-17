@@ -1,6 +1,25 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { login } from "../../_services/auth";
 
 export default function Login() {
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    try {
+      await login(form);
+      navigate("/"); // arahkan ke halaman home
+    } catch (err) {
+      setError("Email atau password salah.");
+      console.error("Login error:", err);
+    }
+  };
+
   return (
     <>
       <section className="bg-gray-50 dark:bg-gray-900">
@@ -10,7 +29,7 @@ export default function Login() {
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                 Sign in to your account
               </h1>
-              <form className="space-y-4 md:space-y-6" action="#">
+              <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6" action="#">
                 <div>
                   <label
                     htmlFor="email"
@@ -22,6 +41,8 @@ export default function Login() {
                     type="email"
                     name="email"
                     id="email"
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="name@company.com"
                     required=""
@@ -39,45 +60,23 @@ export default function Login() {
                     name="password"
                     id="password"
                     placeholder="••••••••"
+                    value={form.password}
+                    onChange={(e) => setForm({ ...form, password: e.target.value })}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     required=""
                   />
                 </div>
-                <div className="flex items-start">
-                  <div className="flex items-center h-5">
-                    <input
-                      id="terms"
-                      aria-describedby="terms"
-                      type="checkbox"
-                      className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-indigo-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-indigo-600 dark:ring-offset-gray-800"
-                      required=""
-                    />
-                  </div>
-                  <div className="ml-3 text-sm">
-                    <label
-                      htmlFor="terms"
-                      className="font-light text-gray-500 dark:text-gray-300"
-                    >
-                      I accept the{" "}
-                      <Link
-                        className="font-medium text-indigo-600 hover:underline dark:text-indigo-500"
-                        to={"#"
-      }                >
-                        Terms and Conditions
-                      </Link>
-                    </label>
-                  </div>
-                </div>
+                {error && <p className="text-red-500">{error}</p>}
                 <button
                   type="submit"
                   className="w-full text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800"
                 >
-                  Create an account
+                  Sign in
                 </button>
                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                   Don’t have an account yet?{" "}
                   <Link
-                    to={"register"}
+                    to={"/register"}
                     className="font-medium text-indigo-600 hover:underline dark:text-indigo-500"
                   >
                     Sign up

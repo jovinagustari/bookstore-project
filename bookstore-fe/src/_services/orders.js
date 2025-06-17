@@ -11,7 +11,7 @@ export const createOrder = async (data) => {
     const response = await API.post("/orders", data);
     return response.data;
   } catch (error) {
-    console.error("Error creating genre:", error);
+    console.error("Error creating order:", error);
     throw error;
   }
 };

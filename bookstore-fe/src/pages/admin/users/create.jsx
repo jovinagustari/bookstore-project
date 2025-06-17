@@ -2,11 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createOrder } from "../../../_services/orders";
 import { getBooks } from "../../../_services/books";
-import { getUsers } from "../../../_services/users";
 
-export default function OrderCreate() {
+export default function UserCreate() {
   const [books, setBooks] = useState([]);
-  const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({
     order_number: "",
     customer_id: 0,
@@ -18,13 +16,11 @@ export default function OrderCreate() {
 
   useEffect(() => {
       const fetchBooks = async () => {
-        const [booksData, usersData] = await Promise.all([
+        const [booksData] = await Promise.all([
           getBooks(),
-          getUsers()
         ]);
   
-        setBooks(booksData),
-        setUsers(usersData);
+        setBooks(booksData);
       }
       fetchBooks();
     }, []);
@@ -39,18 +35,18 @@ export default function OrderCreate() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-        try {
-          const payload = new FormData();
-          for (const key in formData) {
-            payload.append(key, formData[key]);
-          }
-    
-          await createOrder(payload);
-          navigate("/admin/orders");
-        } catch (error) {
-          console.error("Error adding order:", error);
-        }
+
+    try {
+      const payload = new FormData();
+      for (const key in formData) {
+        payload.append(key, formData[key]);
+      }
+
+      await createOrder(payload);
+      navigate("/admin/orders");
+    } catch (error) {
+      console.error("Error adding order:", error);
+    }
   }
   
   return (
@@ -76,30 +72,28 @@ export default function OrderCreate() {
                   value={formData.order_number}
                   onChange={handleChange}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
-                  placeholder="e.g. 001"
+                  placeholder="e.g. J.K. Rowling"
                   required
                 />
               </div>
 
-              <div>
+              <div className="sm:col-span-2">
                 <label
                   for="customer_id"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Customer ID
+                  Birth Year
                 </label>
-                <select
-                  id="customer_id"
+                <input
+                  type="text"
                   name="customer_id"
-                  value={formData.customer_id}
+                  id="customer_id"
+                  value={formData.birth_year}
                   onChange={handleChange}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
-                >
-                  <option value="">--- Select Customer ID ---</option>
-                  {users.map((user) => (
-                    <option key={user.id} value={user.id}>{user.name}</option>
-                  ))}
-                </select>
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
+                  placeholder="e.g. 1920"
+                  required
+                />
               </div>
 
               <div>
@@ -116,9 +110,9 @@ export default function OrderCreate() {
                   onChange={handleChange}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
                 >
-                  <option value="">--- Select Book ID/Title ---</option>
+                  <option value="">--- Select Book ID ---</option>
                   {books.map((book) => (
-                    <option key={book.id} value={book.id}>{book.id}/{book.title}</option>
+                    <option key={book.id} value={book.id}>{book.title}</option>
                   ))}
                 </select>
               </div>

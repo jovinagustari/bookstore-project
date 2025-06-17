@@ -32,8 +32,10 @@ class OrderController extends Controller
     public function store(Request $request) {
         // 1. Validator & check validator
         $validator = Validator::make($request->all(), [
+            'order_number' => 'required|string|max:255',
+            'customer_id' => 'required|exists:users,id',
             'book_id' => 'required|exists:books,id',
-            'quantity' => 'required|integer|min:1',
+            'total_amount' => 'required|integer|min:0'
         ]);
 
         if ($validator->fails()) {
@@ -123,8 +125,10 @@ class OrderController extends Controller
 
         // Validator dan cek validator
         $validator = Validator::make($request->all(), [
-            'book_id' => 'sometimes|required|exists:books,id',
-            'quantity' => 'sometimes|required|integer|min:1'
+            'order_number' => 'required|string|max:255',
+            'customer_id' => 'required|exists:users,id',
+            'book_id' => 'required|exists:books,id',
+            'total_amount' => 'required|integer|min:0'
         ]);
 
         if ($validator->fails()) {

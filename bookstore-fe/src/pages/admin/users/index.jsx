@@ -1,39 +1,29 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { deleteOrder, getOrders } from "../../../_services/orders";
+import { getUsers } from "../../../_services/users";
 
-export default function AdminOrders() {
-  const [orders, setOrders] = useState([]);
+export default function AdminUsers() {
+  const [users, setUsers] = useState([]);
 
   const [openDropdownId, setOpenDropdownId] = useState(null);
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      const [ordersData] = await Promise.all([
-        getOrders()
+    const fetchUsers = async () => {
+      const [usersData] = await Promise.all([
+        getUsers()
       ]);
 
-      setOrders(ordersData);
+      setUsers(usersData);
     }
     
-    fetchOrders();
+    fetchUsers();
   }, []);
+
+  console.log('users:',users);
+  
 
   const toggleDropdown = (id) => {
     setOpenDropdownId(openDropdownId === id ? null : id);
-  }
-
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this order?"); // konfirmasi sebelum menghapus
-
-    if (confirmDelete) {
-      try {
-        await deleteOrder(id);
-        setOrders(orders.filter((order) => order.id !== id));
-      } catch (error) {
-        console.error("Failed to delete order:", error);
-      }
-    }
   }
 
   return (
@@ -74,7 +64,7 @@ export default function AdminOrders() {
               </div>
               <div className="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
                 <Link
-                  to={"/admin/orders/create"}
+                  to={"/admin/users/create"}
                   className="flex items-center justify-center text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-indigo-600 dark:hover:bg-indigo-700 focus:outline-none dark:focus:ring-indigo-800"
                 >
                   <svg
@@ -90,7 +80,7 @@ export default function AdminOrders() {
                       d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
                     />
                   </svg>
-                  Add new order
+                  Add new user
                 </Link>
               </div>
             </div>
@@ -99,16 +89,10 @@ export default function AdminOrders() {
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
                     <th scope="col" className="px-4 py-3">
-                      Order Number
+                      Name
                     </th>
                     <th scope="col" className="px-4 py-3">
-                      order ID
-                    </th>
-                    <th scope="col" className="px-4 py-3">
-                      Book ID
-                    </th>
-                    <th scope="col" className="px-4 py-3">
-                      Total Amount
+                      Email
                     </th>
                     <th scope="col" className="px-4 py-3">
                       <span className="sr-only">Actions</span>
@@ -116,22 +100,20 @@ export default function AdminOrders() {
                   </tr>
                 </thead>
                 <tbody>
-                  {orders.length > 0 ? 
-                    orders.map((order) => (
-                      <tr key={order.id} className="border-b dark:border-gray-700">
+                  {users.length > 0 ? 
+                    users.map((user) => (
+                      <tr key={user.id} className="border-b dark:border-gray-700">
                         <th
                           scope="row"
                           className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                         >
-                          {order.order_number}
+                          {user.name}
                         </th>
-                        <td className="px-4 py-3">{order.customer_id}</td>
-                        <td className="px-4 py-3">{order.book_id}</td>
-                        <td className="px-4 py-3">{order.total_amount}</td>
+                        <td className="px-4 py-3">{user.email}</td>
                         <td className="px-4 py-3 flex items-center justify-end relative">
                           <button
-                            id={`dropdown-button-${order.id}`}
-                            onClick={() => toggleDropdown(order.id)}
+                            id={`dropdown-button-${user.id}`}
+                            onClick={() => toggleDropdown(user.id)}
                             className="inline-flex items-center p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-200 dark:hover:text-white"
                             type="button"
                           >
@@ -146,7 +128,7 @@ export default function AdminOrders() {
                             </svg>
                           </button>
 
-                          {openDropdownId === order.id && (
+                          {openDropdownId === user.id && (
                             <div
                               id="dropdown"
                               className="absolute right-0 mt-2 z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600"
@@ -154,11 +136,11 @@ export default function AdminOrders() {
                             >
                               <ul
                                 className="py-1 text-sm text-gray-700 dark:text-gray-200"
-                                aria-labelledby={`dropdown-button-${order.id}`}
+                                aria-labelledby={`dropdown-button-${user.id}`}
                               >
                                 <li>
                                   <Link
-                                    to={`/admin/orders/edit/${order.id}`}
+                                    to={`/admin/users/edit/${user.id}`}
                                     className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                                   >
                                     Edit
@@ -167,7 +149,6 @@ export default function AdminOrders() {
                               </ul>
                               <div className="py-1">
                                 <button
-                                  onClick={() => handleDelete(order.id)}
                                   className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                                 >
                                   Delete

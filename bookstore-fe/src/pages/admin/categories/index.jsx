@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getCategories } from "../../../_services/categories";
+import { deleteCategory, getCategories } from "../../../_services/categories";
 import { Link } from "react-router-dom";
 
 export default function AdminCategories() {
@@ -21,6 +21,19 @@ export default function AdminCategories() {
 
   const toggleDropdown = (id) => {
     setOpenDropdownId(openDropdownId === id ? null : id);
+  }
+
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this category?"); // konfirmasi sebelum menghapus
+
+    if (confirmDelete) {
+      try {
+        await deleteCategory(id);
+        setCategories(categories.filter((category) => category.id !== id));
+      } catch (error) {
+        console.error("Failed to delete category:", error);
+      }
+    }
   }
 
   return (
@@ -146,6 +159,7 @@ export default function AdminCategories() {
                               </ul>
                               <div className="py-1">
                                 <button
+                                  onClick={() => handleDelete(category.id)}
                                   className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                                 >
                                   Delete
